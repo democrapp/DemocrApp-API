@@ -20,13 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '82*8z&b6iz1yj+)!-c+%0zc(=&)&3=grvzo0o-&&jw@3t3a9hg'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fuyo8dh782grd2d82g0g72gdgb2ewyg8wg0207')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.56', 'democrapp.bedlamtheatre.co.uk', '0.0.0.0']
-
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST', '127.0.0.1')]
 
 # Application definition
 
@@ -78,7 +77,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [(os.environ.get("REDIS_HOST", '127.0.0.1'), 6379)],
         },
     },
 }
@@ -88,11 +87,11 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'democrapp',
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': 'database',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DATABASE_DB', 'democrapp'),
+        'USER': os.environ.get('DATABASE_USER', 'django'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST', '127.0.0.1'),
     }
 }
 
@@ -134,3 +133,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/api/static/'
+STATIC_ROOT = '/srv/static/'
