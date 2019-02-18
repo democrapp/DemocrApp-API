@@ -1,14 +1,36 @@
-from django.http import JsonResponse
+import os
+import requests
+import json
+from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Meeting, Session
-from ratelimit.decorators import ratelimit
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 @csrf_exempt
-@ratelimit(key='ip', rate='100/h', block=True)
 def check_token(request, meeting_id):
     token = request.POST['token']
+    recaptcha = request.POST['recaptcha']
+
+    # Google Recaptcha v2 - https://developers.google.com/recaptcha/docs/verify
+    grk_post_data = {
+        'secret': os.environ.get('GRK'),
+        'response': recaptcha,
+        'remoteip': get_client_ip(request)
+        }
+    grk_response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=grk_post_data)
+    grk_content = json.loads(grk_response.content)
+
+    if not grk_content['success']:
+        return HttpResponseNotAllowed('Google Recaptcha failed: ' + grk_content['error-codes'])
+
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     current_set = meeting.tokenset_set.latest('created_at')
     if current_set.authtoken_set.filter(pk=token).exists():
