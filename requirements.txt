@@ -1,7 +1,7 @@
 Django>2
 channels>2
 channels_redis>2
-psycopg2
+psycopg2-binary
 uwsgi
 daphne
 requests
