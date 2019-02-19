@@ -4,6 +4,7 @@ channels_redis>2
 psycopg2
 uwsgi
 daphne
+requests
 # testing
 pytest-asyncio
 pytest-django
