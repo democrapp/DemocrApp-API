@@ -38,8 +38,8 @@ def close_meeting(request, meeting_id):
                 vote.delete()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(meeting.channel_group_name(),
-                                                {"type": "announcement",
-                                                 "message": "This meeting has now closed"})
+                                                {"type": "terminate_session",
+                                                 "message": "The meeting has been closed by the organisers."})
         meeting.close_time = timezone.now()
         meeting.save()
         return redirect("meeting/report/meeting", meeting_id=meeting_id)
