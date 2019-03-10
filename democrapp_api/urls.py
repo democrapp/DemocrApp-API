@@ -20,5 +20,6 @@ from django.views import defaults
 urlpatterns = [
     path('print.html?t=<int:token_id>&p=<str:has_proxy>', defaults.permission_denied, name='print_token'),
     path('api/admin/', admin.site.urls),
+    path('api/www/', include('www.urls')),
     path('api/',  include('Meeting.urls')),
 ]

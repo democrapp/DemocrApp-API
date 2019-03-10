@@ -26,11 +26,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fuyo8dh782grd2d82g0g72gdgb2ewyg8wg020
 DEBUG = False
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST', '127.0.0.1')]
+MANAGER_URL = ALLOWED_HOSTS[0].split('.', 1)[1]
 
 # Application definition
 
 INSTALLED_APPS = [
     'Meeting.apps.MeetingConfig',
+    'www.apps.WwwConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,3 +136,6 @@ USE_TZ = True
 
 STATIC_URL = '/api/static/'
 STATIC_ROOT = '/srv/static/'
+
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
