@@ -23,6 +23,6 @@ def authorized(request):
         my_slug = ALLOWED_HOSTS[0].split('.', 1)[0]
         if my_slug in r['slugs']:
             # get or create user
-            u = User.objects.get_or_create(is_superuser=True, is_staff=True, username=r['username'])
+            u, _ = User.objects.get_or_create(is_superuser=True, is_staff=True, username=r['username'])
             login(request, u)
-            return redirect(request, '/admin')
+            return redirect(request, 'admin:index')
