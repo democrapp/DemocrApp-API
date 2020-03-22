@@ -137,3 +137,4 @@ USE_TZ = True
 STATIC_URL = '/api/static/'
 
 CELERY_BROKER_URL = 'redis://localhost'
+GRK_SECRET = '6LfeMuMUAAAAAKGn_-Anqb8rVDr4kmdZf36lSD-9'

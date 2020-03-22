@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from ..models import Meeting, Session
+from democrapp_api.settings import GRK_SECRET
+
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -14,6 +16,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
 @csrf_exempt
 def check_token(request, meeting_id):
     token = request.POST['token']
@@ -21,7 +24,7 @@ def check_token(request, meeting_id):
 
     # Google Recaptcha v2 - https://developers.google.com/recaptcha/docs/verify
     grk_post_data = {
-        'secret': os.environ.get('GRK'),
+        'secret': GRK_SECRET,
         'response': recaptcha,
         'remoteip': get_client_ip(request)
         }
@@ -46,5 +49,4 @@ def check_token(request, meeting_id):
         response = JsonResponse(response)
     else:
         response = JsonResponse({"success": False, "reason": "BadToken"})
-    response["Access-Control-Allow-Origin"] = "*"
     return response
